@@ -19,6 +19,8 @@ namespace Entities
         DateIncorrect,
         [CustomString("Отношение между этими людьми уже [green]есть[/] в базе")]
         RelationWrong,
+        [CustomString("У этих бедолаг [green]нет[/] общих предков :")]
+        NoAncestors,
 
     }
 }

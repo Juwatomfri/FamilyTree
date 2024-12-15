@@ -23,6 +23,9 @@ namespace Entities
         
         [CustomString("Изобразить семейное дерево")]
         PrintTree,
+        
+        [CustomString("Найти общих предков")]
+        FindAncestors,
 
         [CustomString("Выйти из приложения")]
         Exit,

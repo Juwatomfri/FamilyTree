@@ -23,7 +23,8 @@ namespace Presentation
             var isRunning = true;
             while (isRunning)
             {
-                var option = GetChoice(SelectTitle.Option, [Option.Create, Option.Clean, Option.GetNearest, Option.GetAges, Option.SetRelation, Option.PrintTree, Option.Exit]);
+                var option = GetChoice(SelectTitle.Option, [Option.Create, Option.Clean, Option.GetNearest, 
+                    Option.GetAges, Option.SetRelation, Option.PrintTree, Option.FindAncestors, Option.Exit]);
 
                 switch (option)
                 {
@@ -51,6 +52,9 @@ namespace Presentation
                         break;
                     case Option.PrintTree:
                         PrintFamilyTree();
+                        break;
+                    case Option.FindAncestors:
+                        PrintCommonAncestors();
                         break;
                     case Option.Clean:
                         _tree.ExecuteAction(service => service.CleanTree());
@@ -186,6 +190,62 @@ namespace Presentation
                     }
                 });
             }
+        }
+
+        public HashSet<int> GetAncestors(Relative person, List<Relative> relatives)
+        {
+            var ancestors = new HashSet<int>();
+
+            var queue = new Queue<Relative>();
+            queue.Enqueue(person);
+
+            while (queue.Count > 0)
+            {
+                var current = queue.Dequeue();
+
+                foreach (var relation in current.Relations.Where(r => r.Value == Relation.Parent))
+                {
+                    var parent = relatives.FirstOrDefault(p => p.Id == relation.Key);
+                    if (parent != null && ancestors.Add(parent.Id))
+                    {
+                        queue.Enqueue(parent);  
+                    }
+                }
+            }
+            return ancestors;
+        }
+
+        public void PrintCommonAncestors()
+        {
+            List<Relative> relatives = _tree.GetAllRelativies();
+            var relativeId = GetRelativeId(_ => true);
+            var relative2Id = GetRelativeId(_ => true);
+            var relative = relatives.FirstOrDefault(r => r.Id == relativeId);
+            var relative2 = relatives.FirstOrDefault(r => r.Id == relative2Id);
+
+            var ancestors1 = GetAncestors(relative, relatives);
+            var ancestors2 = GetAncestors(relative2, relatives);
+
+            var commonAncestors = new HashSet<int>(ancestors1);
+            commonAncestors.IntersectWith(ancestors2);
+
+            if (!commonAncestors.Any())
+            {
+                PrintMarkup(Input.NoAncestors, relative.FirstName, relative.LastName);
+                AnsiConsole.WriteLine(string.Empty);
+                return;
+            }
+
+            AnsiConsole.WriteLine($"Общие предки для {relative.FirstName} и {relative2.FirstName}:");
+
+            var rows = commonAncestors.Select(ancestorId =>
+            {
+                var ancestor = relatives.FirstOrDefault(r => r.Id == ancestorId);
+                return ancestor != null ? new Text($"{ancestor.FirstName} {ancestor.LastName} ({ancestor.BirthDate:dd.MM.yyyy})") : null;
+            }).Where(x => x != null).ToList();
+
+            AnsiConsole.Write(new Rows(rows));
+            AnsiConsole.WriteLine(string.Empty);
         }
 
         public T GetChoice<T>(SelectTitle title, T[] choices, params object[] objs) where T : Enum =>
