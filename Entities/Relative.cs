@@ -30,7 +30,7 @@ namespace Entities
         public string GetFullName() => string.Join(' ', [LastName, FirstName, Patronymic]);
 
         public string GetRelativeAge(Relative child) => string.Join(' ', [LastName, FirstName, Patronymic]) 
-            + $" на момент рождения {child.FirstName} был(/а) в возрасте " 
+            + $" на момент рождения {child.FirstName} был(а) в возрасте " 
             + $"{child.BirthDate.Year - BirthDate.Year } лет";
 
         public string ToConsoleOutput() => $"{Id} {GetFullName()}";

@@ -18,8 +18,11 @@ namespace Entities
         [CustomString("Вывести ближайших родственников")]
         GetNearest, 
         
-        [CustomString("Посчитать возраст")]
+        [CustomString("Посчитать возраст родителей")]
         GetAges,
+        
+        [CustomString("Изобразить семейное дерево")]
+        PrintTree,
 
         [CustomString("Выйти из приложения")]
         Exit,

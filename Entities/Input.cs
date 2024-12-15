@@ -11,9 +11,14 @@ namespace Entities
     {
         [CustomString("Ближайшие родственники [green]{0}[/]:")]
         Nearest,
+        [CustomString("Родители [green]{0}[/]:")]
+        Parents,
+        [CustomString("Семейно дерево для человека по имени [green]{0}[/]:")]
+        Tree,
         [CustomString("Формат даты [green] неверный[/], повторите ввод:")]
         DateIncorrect,
-        [CustomString("Возраст [green] неверный[/], повторите ввод:")]
-        ParentsAges
+        [CustomString("Отношение между этими людьми уже [green]есть[/] в базе")]
+        RelationWrong,
+
     }
 }
