@@ -10,6 +10,10 @@ namespace Entities
     public enum Input
     {
         [CustomString("Ближайшие родственники [green]{0}[/]:")]
-        Nearest
+        Nearest,
+        [CustomString("Формат даты [green] неверный[/], повторите ввод:")]
+        DateIncorrect,
+        [CustomString("Возраст [green] неверный[/], повторите ввод:")]
+        ParentsAges
     }
 }

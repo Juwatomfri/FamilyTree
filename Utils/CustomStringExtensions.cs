@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CSharpx;
 
@@ -21,5 +22,12 @@ namespace Utils
 
         public static T FromCustomString<T>(this string obj) where T : Enum => 
             Enum.GetValues(typeof(T)).Cast<T>().First(v => v.ToCustomString() == obj);
+
+        public static bool Validate(this string str, string regExp)
+        {
+            Regex regex = new Regex(regExp);
+            MatchCollection matches = regex.Matches(str);
+            return matches.Count > 0;
+        }
     }
 }

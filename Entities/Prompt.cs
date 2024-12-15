@@ -17,5 +17,8 @@ namespace Entities
 
         [CustomString("Введите [green]отчество[/]:")]
         WhatIsPatronymic,
+        
+        [CustomString("Введите [green]дату рождения[/]:")]
+        WhatIsDateOfBirth,
     }
 }

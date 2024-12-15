@@ -16,7 +16,10 @@ namespace Entities
         SetRelation,
 
         [CustomString("Вывести ближайших родственников")]
-        GetNearest,
+        GetNearest, 
+        
+        [CustomString("Посчитать возраст")]
+        GetAges,
 
         [CustomString("Выйти из приложения")]
         Exit,
