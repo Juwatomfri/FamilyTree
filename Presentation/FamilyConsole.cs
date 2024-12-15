@@ -134,29 +134,32 @@ namespace Presentation
             var tree = new Tree($"[yellow]{relative.FirstName} {relative.LastName} ({relative.BirthDate:dd.MM.yyyy})[/]");
 
             var visited = new HashSet<int>();
-            BuildFamilyTree(tree.AddNode(""), relative, relatives, visited);
+            BuildFamilyTree(tree.AddNode(""), relative, relatives, visited, "Root");
 
             AnsiConsole.Write(tree);
         }
 
-        public void BuildFamilyTree(TreeNode parentNode, Relative currentPerson, List<Relative> relatives, HashSet<int> visited)
+        public void BuildFamilyTree(TreeNode parentNode, Relative currentPerson, List<Relative> relatives, HashSet<int> visited, string context)
         {
             if (visited.Contains(currentPerson.Id))
                 return;
 
             visited.Add(currentPerson.Id);
 
-            currentPerson.Relations.Where(r => r.Value == Relation.Parent).ForEach(r =>
+            if (context != "Child")
             {
-                var parent = relatives.FirstOrDefault(p => p.Id == r.Key);
-                if (parent != null)
+                currentPerson.Relations.Where(r => r.Value == Relation.Parent).ForEach(r =>
                 {
-                    var parentNodeChild = parentNode.AddNode(
-                        $"[blue]Родитель:[/] {parent.FirstName} {parent.LastName} ({parent.BirthDate:dd.MM.yyyy})"
-                    );
-                    BuildFamilyTree(parentNodeChild, parent, relatives, visited);
-                }
-            });
+                    var parent = relatives.FirstOrDefault(p => p.Id == r.Key);
+                    if (parent != null)
+                    {
+                        var parentNodeChild = parentNode.AddNode(
+                            $"[blue]Родитель:[/] {parent.FirstName} {parent.LastName} ({parent.BirthDate:dd.MM.yyyy})"
+                        );
+                        BuildFamilyTree(parentNodeChild, parent, relatives, visited, "Parent");
+                    }
+                });
+            }
 
             currentPerson.Relations.Where(r => r.Value == Relation.Spouse).ForEach(r =>
             {
@@ -169,17 +172,20 @@ namespace Presentation
                 }
             });
 
-            currentPerson.Relations.Where(r => r.Value == Relation.Child).ForEach(r =>
+            if (context != "Parent")
             {
-                var child = relatives.FirstOrDefault(p => p.Id == r.Key);
-                if (child != null)
+                currentPerson.Relations.Where(r => r.Value == Relation.Child).ForEach(r =>
                 {
-                    var childNode = parentNode.AddNode(
-                        $"[green]Ребёнок:[/] {child.FirstName} {child.LastName} ({child.BirthDate:dd.mm.yyyy})"
-                    );
-                    BuildFamilyTree(childNode, child, relatives, visited);
-                }
-            });
+                    var child = relatives.FirstOrDefault(p => p.Id == r.Key);
+                    if (child != null)
+                    {
+                        var childNode = parentNode.AddNode(
+                            $"[green]Ребёнок:[/] {child.FirstName} {child.LastName} ({child.BirthDate:dd.MM.yyyy})"
+                        );
+                        BuildFamilyTree(childNode, child, relatives, visited, "Child");
+                    }
+                });
+            }
         }
 
         public T GetChoice<T>(SelectTitle title, T[] choices, params object[] objs) where T : Enum =>
